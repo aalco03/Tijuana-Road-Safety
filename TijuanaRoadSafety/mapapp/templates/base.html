@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %} 
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Road Safety Tijuana{% endblock %}</title>
+    <style>
+        .navbar-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background: linear-gradient(90deg, #333, #444);
+            padding: 10px 0;
+            z-index: 100;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background: rgba(184, 76, 41, 0.3);
+            border-radius: 10px;
+            padding: 8px 20px;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.3s ease, color 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: rgb(184, 76, 41);
+        }
+        .form-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        }
+
+        .map-container {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #d65a31;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #b84c29;
+        }
+        .report-image {
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .audit-btn {
+            display: block;
+            width: auto;
+            padding: 10px 20px;
+            margin: 20px auto;
+            background-color: #d65a31;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .audit-btn:hover {
+            background-color: #b84c29;
+        }
+
+        .info-icon {
+            display: inline-block;
+            margin-left: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            background-color: black;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            bottom: -35px; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            font-size: 14px;
+            z-index: 10;
+        }
+
+        .info-icon:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        body {
+            font-family: "Trebuchet MS", "Arial", sans-serif;
+            background: url("{% static 'PaperBackground.jpg' %}") repeat;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(245, 243, 243, 0.9);
+            box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .sketch-images {
+            position: absolute;
+            opacity: 0.8;
+            z-index: -1;
+        }
+        .Taquero { top: 15px; left:10px; width: 300px; }
+        .Cuauhtémoc { top: 25%; left: 210px; width: 120px;}
+        .Munguia { top: 85%; right: 550px; width: 500px; }
+        .Xolo { top: 85%; left: 350px; width: 240px;  transform: rotate(10deg);}
+        .Taxi { top: 10px; right: 5px; width: 380px; }
+        .Shrek { top: 45%; left: 15px; width: 220px; transform: rotate(-12deg); }
+        .Torres { top: 66%; left: 170px; width: 180px; }
+        .Patria { top: 76%; left: 15px; width: 155px;}
+        .Wall { top: 93%; left: 90px; width: 260px;}
+        .Moy { top: 90%; right: 30px; width: 220px; transform: rotate(15deg); }
+        .Maistro { top: 80%; right: 300px; width: 200px; }
+        .Churros { top: 30%; right: 10px; width: 250px; }
+        .Arco { top: 28%; right: 270px; width: 100px; }
+        .Zonkey{ top: 63%; right: 110px; width: 250px; transform: rotate(12deg); }
+
+        h1 {
+            color: #d65a31;
+            font-size: 32px;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'report_pothole' %}">Report Submission</a>
+    </div>
+
+    <img src="{% static 'TijuanaDrawing.png' %}" class="sketch-images Patria">
+    <img src="{% static 'CuauhtémocDrawing.png' %}" class="sketch-images Cuauhtémoc">
+    <img src="{% static 'ShrekTijuanaDrawing.png' %}" class="sketch-images Shrek">
+    <img src="{% static 'XoloTextoDrawing.png' %}" class="sketch-images Xolo">
+    <img src="{% static 'TaqueroFDrawing.png' %}" class="sketch-images Taquero">
+    <img src="{% static 'ChurrosManDrawing.png' %}" class="sketch-images Churros">
+    <img src="{% static 'ArcDrawing.png' %}" class="sketch-images Arco">
+    <img src="{% static 'MimoMoy.png' %}" class="sketch-images Moy">
+    <img src="{% static 'MaistroDrawing.png' %}" class="sketch-images Maistro">
+    <img src="{% static 'TaxistaDrawing.png' %}" class="sketch-images Taxi">
+    <img src="{% static 'ZonkeyDrawing.png' %}" class="sketch-images Zonkey">
+    <img src="{% static 'MunguiaVsBacheDrawing.png' %}" class="sketch-images Munguia">
+    <img src="{% static 'ShrekTijuanaDrawing.png' %}" class="sketch-images Shrek">
+    <img src="{% static 'BorderWallDrawing.png' %}" class="sketch-images Wall">
+    <img src="{% static 'TorresDrawing.png' %}" class="sketch-images Torres">
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block extra_scripts %}{% endblock %} 
+
+</body>
+</html>
+
+
+

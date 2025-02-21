@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Report a Pothole{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <h1>Report a Pothole</h1>
+
+        <form method="post" enctype="multipart/form-data" class="form-container">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-group">
+                {{ form.phone_number.label_tag }} {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                    <div class="error">{{ form.phone_number.errors }}</div>
+                {% endif %}
+                <span class="info-icon">
+                    &#9432;
+                    <span class="tooltip">Note: If you wish to audit your own report, or update it in the future without needing further review, then please include your phone number.</span>
+                </span>
+            </div>
+
+            <div class="form-group">
+                {{ form.severity.label_tag }} {{ form.severity }}
+                {% if form.severity.errors %}
+                    <div class="error">{{ form.severity.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.image.label_tag }} {{ form.image }}
+                {% if form.image.errors %}
+                    <div class="error">{{ form.image.errors }}</div>
+                {% endif %}
+            </div>
+
+            <input type="hidden" id="id_latitude" name="latitude" value="">
+            <input type="hidden" id="id_longitude" name="longitude" value="">
+
+            <div class="map-container">
+                <p>Click on the map to place the pothole location:</p>
+                <div id="map"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
+
+    <script>
+        var map;
+        var marker;
+
+        var tijuanaBounds = {
+            north: 32.566,
+            south: 32.441,
+            west: -117.122,
+            east: -116.905
+        };
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                minZoom: 10,
+                center: {lat: 32.5149, lng: -117.0382},
+                restriction: {
+                    latLngBounds: tijuanaBounds,
+                    strictBounds: true
+                },
+                scrollwheel: true,
+                draggable: true
+            });
+
+            map.addListener('click', function(event) {
+                if (isWithinBounds(event.latLng)) {
+                    placeMarker(event.latLng);
+                } else {
+                    alert("Please click within the Tijuana city bounds.");
+                }
+            });
+        }
+
+        function placeMarker(location) {
+            if (marker) {
+                marker.setPosition(location);
+            } else {
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+            }
+
+            document.getElementById('id_latitude').value = location.lat();
+            document.getElementById('id_longitude').value = location.lng();
+        }
+
+        function isWithinBounds(latLng) {
+            return latLng.lat() >= tijuanaBounds.south &&
+                   latLng.lat() <= tijuanaBounds.north &&
+                   latLng.lng() >= tijuanaBounds.west &&
+                   latLng.lng() <= tijuanaBounds.east;
+        }
+    </script>
+{% endblock %}
+
+
+

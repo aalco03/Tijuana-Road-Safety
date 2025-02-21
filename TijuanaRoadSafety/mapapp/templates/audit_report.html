@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Audit Pothole Report{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Audit Pothole Report</h1>
+
+        <div class="form-container">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {{ form.as_p }}
+
+                {% if form.non_field_errors %}
+                    <div class="error">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors }}</div>
+                    {% endif %}
+                {% endfor %}
+
+                <button type="submit" class="submit-btn">Submit Audit</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

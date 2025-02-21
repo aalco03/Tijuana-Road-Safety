@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Pothole Report{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Pothole Report</h1>
+
+        <p><strong>Date of Submission:</strong> {{ report.timestamp }}</p>
+
+        {% if report.image %}
+            <p><img src="{{ report.image.url }}" alt="Pothole Image" class="report-image"></p>
+        {% else %}
+            <p>No image available.</p>
+        {% endif %}
+
+        <form action="{% url 'audit_report' report.id %}" method="get">
+            <button type="submit" class="audit-btn">Audit Submission</button>
+        </form>
+    </div>
+{% endblock %}
