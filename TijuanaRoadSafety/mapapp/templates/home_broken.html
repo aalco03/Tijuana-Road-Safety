@@ -11,8 +11,13 @@
         </p>
     </div>
 
+    <!-- Map and Leaderboard Container -->
+    <div class="container">
+        <h2>Interactive Map & Pothole Rankings</h2>
+        <p>Explore potholes on the map and see detailed reports ranked by severity and frequency.</p>
+    </div>
 
-    <div class="map-leaderboard-container" style="max-width: 1000px; margin: 20px auto 120px auto; display: flex; gap: 20px; align-items: flex-start;">
+    <div class="map-leaderboard-container" style="max-width: 1000px; margin: 20px auto; display: flex; gap: 20px; align-items: flex-start;">
         <!-- Map Section -->
         <div class="map-section" style="flex: 1; min-width: 0;">
             <div class="map-controls" style="margin-bottom: 10px; text-align: left;">
@@ -47,7 +52,14 @@
                     </thead>
                     <tbody>
                         {% for pothole in top_potholes %}
-                        <tr style="background-color: {% if forloop.counter0|divisibleby:2 %}rgba(255, 255, 255, 0.8){% else %}rgba(240, 240, 240, 0.8){% endif %}; border-bottom: 1px solid #ddd;">
+                        <tr style="
+                            {% if forloop.counter0|divisibleby:2 %}
+                                background-color: rgba(255, 255, 255, 0.8);
+                            {% else %}
+                                background-color: rgba(240, 240, 240, 0.8);
+                            {% endif %}
+                            border-bottom: 1px solid #ddd;
+                        ">
                             <td style="padding: 4px; font-size: 12px; text-align: center; font-weight: bold; color: #2c3e50;">{{ forloop.counter }}</td>
                             <td style="padding: 4px;">
                                 {% if pothole.image %}
@@ -63,7 +75,11 @@
                             <td style="padding: 4px; text-align: center;">
                                 <div style="display: flex; align-items: center; justify-content: center;">
                                     <div style="width: 30px; height: 6px; background: #ddd; border-radius: 3px; margin-right: 4px; overflow: hidden;">
-                                        <div style="width: {{ pothole.severity|floatformat:0 }}0%; height: 100%; background: {% if pothole.severity <= 2 %}#00FF00{% elif pothole.severity == 3 %}#FFFF00{% elif pothole.severity == 4 %}#FF7F00{% else %}#FF0000{% endif %};"></div>
+                                        <div style="width: {{ pothole.severity|floatformat:0 }}0%; height: 100%; background: 
+                                            {% if pothole.severity <= 2 %}#00FF00
+                                            {% elif pothole.severity == 3 %}#FFFF00
+                                            {% elif pothole.severity == 4 %}#FF7F00
+                                            {% else %}#FF0000{% endif %};"></div>
                                     </div>
                                     <span style="font-size: 10px; font-weight: bold;">{{ pothole.severity }}/5</span>
                                 </div>
@@ -95,7 +111,7 @@
         box-sizing: border-box;
     ">
         <div style="position: relative; width: 100%; height: 100%;">
-            <button id="closeMapBtn" onclick="closeExpandedMap()" style="
+            <button id="closeMapBtn" onclick="toggleMapSize()" style="
                 position: absolute;
                 top: 10px;
                 right: 10px;
@@ -185,7 +201,8 @@
             // Add markers for each pothole
             var locations = [
                 {% for report in reports %}
-                    { lat: {{ report.latitude }}, lng: {{ report.longitude }}, severity: {{ report.severity }}, id: {{ report.id }} }{% if not forloop.last %},{% endif %}
+                    { lat: {{ report.latitude }}, lng: {{ report.longitude }}, severity: {{ report.severity }}, id: {{ report.id }} }
+                    {% if not forloop.last %},{% endif %}
                 {% endfor %}
             ];
 
@@ -204,12 +221,12 @@
                     map: map,
                     title: "Pothole (Severity: " + location.severity + ")",
                     icon: {
-                        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">' +
-                            '<circle cx="12" cy="12" r="10" fill="' + color + '" stroke="#333" stroke-width="2"/>' +
-                            '<text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-weight="bold">!</text>' +
-                            '</svg>'
-                        ),
+                        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" fill="${color}" stroke="#333" stroke-width="2"/>
+                                <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-weight="bold">!</text>
+                            </svg>
+                        `),
                         scaledSize: new google.maps.Size(24, 24)
                     }
                 });
@@ -224,40 +241,28 @@
 
         function toggleMapSize() {
             const overlay = document.getElementById('mapOverlay');
+            const expandBtn = document.getElementById('expandMapBtn');
             
             if (!isMapExpanded) {
                 // Show expanded map
                 overlay.style.display = 'block';
+                expandBtn.innerHTML = 'Expand Map';
                 
-                // Initialize expanded map after a short delay
+                // Wait for overlay to be visible, then initialize map
                 setTimeout(function() {
                     const tijuana = { lat: 32.5149, lng: -117.0382 };
                     expandedMap = new google.maps.Map(document.getElementById("expandedMap"), {
                         zoom: 13,
                         center: tijuana,
-                        styles: [
-                            {
-                                "featureType": "landscape",
-                                "elementType": "geometry.fill",
-                                "stylers": [{"color": "#ffffff"}]
-                            },
-                            {
-                                "featureType": "road",
-                                "elementType": "geometry.fill",
-                                "stylers": [{"color": "#eeeeee"}]
-                            },
-                            {
-                                "featureType": "water",
-                                "elementType": "geometry.fill",
-                                "stylers": [{"color": "#c8d7d4"}]
-                            }
-                        ]
+                        styles: mapStyles
                     });
                     
-                    // Add markers to expanded map
+                    // Copy markers to expanded map
+                    expandedMarkers = [];
                     var locations = [
                         {% for report in reports %}
-                            { lat: {{ report.latitude }}, lng: {{ report.longitude }}, severity: {{ report.severity }}, id: {{ report.id }} }{% if not forloop.last %},{% endif %}
+                            { lat: {{ report.latitude }}, lng: {{ report.longitude }}, severity: {{ report.severity }}, id: {{ report.id }} }
+                            {% if not forloop.last %},{% endif %}
                         {% endfor %}
                     ];
 
@@ -276,12 +281,12 @@
                             map: expandedMap,
                             title: "Pothole (Severity: " + location.severity + ")",
                             icon: {
-                                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
-                                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">' +
-                                    '<circle cx="12" cy="12" r="10" fill="' + color + '" stroke="#333" stroke-width="2"/>' +
-                                    '<text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-weight="bold">!</text>' +
-                                    '</svg>'
-                                ),
+                                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" fill="${color}" stroke="#333" stroke-width="2"/>
+                                        <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-weight="bold">!</text>
+                                    </svg>
+                                `),
                                 scaledSize: new google.maps.Size(24, 24)
                             }
                         });
@@ -292,22 +297,18 @@
                         
                         expandedMarkers.push(expandedMarker);
                     });
-                }, 200);
+                }, 100);
                 
                 isMapExpanded = true;
+            } else {
+                // Hide expanded map
+                overlay.style.display = 'none';
+                isMapExpanded = false;
+                if (expandedMap) {
+                    expandedMap = null;
+                }
+                expandedMarkers = [];
             }
-        }
-
-        function closeExpandedMap() {
-            const overlay = document.getElementById('mapOverlay');
-            overlay.style.display = 'none';
-            isMapExpanded = false;
-            
-            // Clean up expanded map
-            if (expandedMap) {
-                expandedMap = null;
-            }
-            expandedMarkers = [];
         }
     </script>
 {% endblock %}

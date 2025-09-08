@@ -3,9 +3,10 @@ import tempfile
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core.files.base import ContentFile
 from django.conf import settings
+from django.db.models import F
 from twilio.twiml.messaging_response import MessagingResponse
 from .forms import PotholeReportForm
 from .models import PotholeReport
@@ -21,7 +22,13 @@ CLIENT = InferenceHTTPClient(
 
 def home(request):
     reports = PotholeReport.objects.all()
-    return render(request, 'home.html', {'reports': reports, 'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY})
+    # Get top potholes ranked by submission count
+    top_potholes = PotholeReport.objects.all().order_by('-submission_count', '-timestamp')[:10]
+    return render(request, 'home.html', {
+        'reports': reports, 
+        'top_potholes': top_potholes,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY
+    })
 
 def report_pothole(request):
     if request.method == 'POST':
@@ -54,7 +61,7 @@ def report_pothole(request):
         return render(request, 'report_pothole.html', {'form': form}) 
     else:
         form = PotholeReportForm()
-    return render(request, 'report_pothole.html', {'form': form}) 
+    return render(request, 'report_pothole.html', {'form': form, 'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY}) 
 
 def report_detail(request, report_id):
     report = get_object_or_404(PotholeReport, pk=report_id)
@@ -234,3 +241,52 @@ def submit_pothole_report(session, from_number, msg):
 
     except requests.RequestException as e:
         msg.body(f"Failed to download the image. Please try again later. Error: {str(e)}")
+
+# API endpoint for checking nearby potholes
+def check_nearby_potholes(request):
+    if request.method == 'POST':
+        try:
+            latitude = float(request.POST.get('latitude'))
+            longitude = float(request.POST.get('longitude'))
+            
+            nearby_potholes = PotholeReport.find_nearby_potholes(latitude, longitude, radius_meters=50)
+            
+            pothole_data = []
+            for item in nearby_potholes:
+                pothole = item['pothole']
+                pothole_data.append({
+                    'id': pothole.id,
+                    'latitude': pothole.latitude,
+                    'longitude': pothole.longitude,
+                    'severity': pothole.severity,
+                    'submission_count': pothole.submission_count,
+                    'distance': round(item['distance'], 2),
+                    'image_url': pothole.image.url if pothole.image else None,
+                    'approximate_address': pothole.approximate_address or 'Address not available'
+                })
+            
+            return JsonResponse({'nearby_potholes': pothole_data})
+        except (ValueError, TypeError):
+            return JsonResponse({'error': 'Invalid coordinates'}, status=400)
+    
+    return JsonResponse({'error': 'POST request required'}, status=405)
+
+# API endpoint for incrementing pothole submission count
+def increment_pothole_count(request):
+    if request.method == 'POST':
+        try:
+            pothole_id = int(request.POST.get('pothole_id'))
+            pothole = get_object_or_404(PotholeReport, id=pothole_id)
+            pothole.submission_count = F('submission_count') + 1
+            pothole.save()
+            pothole.refresh_from_db()
+            
+            return JsonResponse({
+                'success': True,
+                'new_count': pothole.submission_count,
+                'message': 'Thank you for confirming this existing pothole report!'
+            })
+        except (ValueError, TypeError):
+            return JsonResponse({'error': 'Invalid pothole ID'}, status=400)
+    
+    return JsonResponse({'error': 'POST request required'}, status=405)
