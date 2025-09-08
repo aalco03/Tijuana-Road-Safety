@@ -187,23 +187,39 @@
             pointer-events: none;
             height: auto;
             max-width: none;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(-5px) rotate(-1deg); }
+            75% { transform: translateY(-15px) rotate(0.5deg); }
+        }
+        
+        .sketch-images:nth-child(odd) {
+            animation-delay: -2s;
+        }
+        
+        .sketch-images:nth-child(even) {
+            animation-delay: -4s;
         }
         
         /* Non-overlapping edge positioning - completely separated zones */
         .Taquero { top: 1vh; left: 1vw; width: 18vw; }
         .Cuauhtémoc { top: 18vh; left: 13vw; width: 9vw;}
-        .Munguia { top: 75vh; right: 1vw; width: 26vw; }
-        .Xolo { top: 83vh; left: 15vw; width: 16vw; }
-        .Taxi { top: 2vh; right: 1vw; width: 24vw; } 
-        .Shrek { top: 76vh; left: 0.5vw; width: 14vw; }
+        .Munguia { top: 86vh; right: 30vw; width: 35vw; }
+        .Xolo { top: 83vh; left: 15vw; width: 18vw; }
+        .Taxi { top: 2vh; right: 1vw; width: 28vw; } 
+        .Shrek { top: 78vh; left: 0.5vw; width: 16vw; }
         .Torres { top: 45vh; left: 0.5vw; width: 11vw; }
         .Patria { top: 58vh; left: 13vw; width: 10vw;}
-        .Wall { top: 2vh; left: 21vw; width: 17vw;}
-        .Moy { top: 60vh; right: 35vw; width: 13vw; }
-        .Maistro { top: 35vh; right: 1vw; width: 12vw; }
-        .Churros { top: 15vh; right: 1vw; width: 15vw; }
-        .Arco { top: 8vh; right: 32vw; width: 6vw; }
-        .Zonkey{ top: 55vh; right: 1vw; width: 15vw; }
+        .Wall { top: 2vh; left: 27vw; width: 24vw;}
+        .Moy { top: 82vh; right:16vw; width: 14vw; }
+        .Maistro { top: 35vh; right: 12vw; width: 14vw; }
+        .Churros { top: 56vh; right: 1vw; width: 15vw; }
+        .Arco { top: 5vh; right: 34vw; width: 12vw; }
+        .Zonkey{ top: 94vh; right: 6vw; width: 20vw; }
 
         h1 {
             font-family: "Shrikhand", serif;
