@@ -27,7 +27,7 @@
         .navbar {
             display: flex;
             justify-content: center;
-            background: linear-gradient(90deg, #333, #444);
+            background: #F5F5DC;
             border-radius: 10px;
             padding: 8px 20px;
             max-width: 1000px;
@@ -35,8 +35,8 @@
         }
 
         .navbar a {
-            font-family: "Jacques Francois Shadow", serif;
-            color: white;
+            font-family: "Figtree", sans-serif;
+            color: grey;
             padding: 12px 20px;
             text-decoration: none;
             font-size: 18px;
@@ -48,7 +48,7 @@
 
         .navbar a:hover {
             background-color: rgba(255, 255, 255, 0.2);
-            color: #2c3e50;
+            color: #F5F5DC;
         }
         
         .form-container {
@@ -206,25 +206,25 @@
             animation-delay: -4s;
         }
         
-        /* Non-overlapping edge positioning - completely separated zones */
-        .Taquero { top: 1vh; left: 1vw; width: 18vw; }
-        .Cuauhtémoc { top: 18vh; left: 13vw; width: 9vw;}
-        .Munguia { top: 82vh; right: 30vw; width: 35vw; }
-        .Xolo { top: 83vh; left: 15vw; width: 18vw; }
-        .Taxi { top: 2vh; right: 1vw; width: 28vw; } 
-        .Shrek { top: 78vh; left: 0.5vw; width: 16vw; }
-        .Torres { top: 45vh; left: 0.5vw; width: 11vw; }
-        .Patria { top: 58vh; left: 13vw; width: 10vw;}
-        .Wall { top: 2vh; left: 27vw; width: 24vw;}
-        .Moy { top: 82vh; right:16vw; width: 14vw; }
-        .Maistro { top: 35vh; right: 12vw; width: 14vw; }
-        .Churros { top: 56vh; right: 1vw; width: 15vw; }
-        .Arco { top: 5vh; right: 34vw; width: 12vw; }
-        .Zonkey{ top: 94vh; right: 6vw; width: 20vw; }
+        /* Non-overlapping edge positioning - completely separated zones - shifted down for hero section */
+        .Taquero { top: 39vh; left: 1vw; width: 18vw; }
+        .Cuauhtémoc { top: 56vh; left: 13vw; width: 9vw;}
+        .Munguia { top: 120vh; right: 30vw; width: 35vw; }
+        .Xolo { top: 121vh; left: 15vw; width: 18vw; }
+        .Taxi { top: 40vh; right: 1vw; width: 28vw; } 
+        .Shrek { top: 116vh; left: 0.5vw; width: 16vw; }
+        .Torres { top: 83vh; left: 0.5vw; width: 11vw; }
+        .Patria { top: 96vh; left: 13vw; width: 10vw;}
+        .Wall { top: 40vh; left: 27vw; width: 24vw;}
+        .Moy { top: 120vh; right:16vw; width: 14vw; }
+        .Maistro { top: 73vh; right: 12vw; width: 14vw; }
+        .Churros { top: 94vh; right: 1vw; width: 15vw; }
+        .Arco { top: 43vh; right: 34vw; width: 12vw; }
+        .Zonkey{ top: 132vh; right: 6vw; width: 20vw; }
 
         h1 {
             font-family: "Jacques Francois Shadow", serif;
-            color: #2c3e50;
+            color: #FFFFFF;
             font-size: 32px;
             font-weight: 400;
         }
@@ -232,7 +232,7 @@
         body, p {
             font-family: "Figtree", sans-serif;
             font-size: 18px;
-            color: #333;
+            color: #FFFFFF;
         }
         
         /* Form styling */
@@ -243,6 +243,36 @@
             font-size: 16px;
         }
         
+        /* Main hero responsive styles */
+        @media (max-width: 768px) {
+            .main-hero h1 {
+                font-size: 2.5rem !important;
+            }
+            
+            .main-hero p {
+                font-size: 1.1rem !important;
+            }
+            
+            .main-hero {
+                padding: 60px 15px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-hero h1 {
+                font-size: 2rem !important;
+                letter-spacing: 1px !important;
+            }
+            
+            .main-hero p {
+                font-size: 1rem !important;
+            }
+            
+            .main-hero {
+                padding: 50px 10px !important;
+            }
+        }
+
         /* Responsive styles for map and leaderboard */
         @media (max-width: 768px) {
             .map-leaderboard-container {
@@ -273,21 +303,6 @@
         </div>
     </div>
 
-    <!-- Sketch Images -->
-    <img src="{% static 'TijuanaDrawing.png' %}" class="sketch-images Patria">
-    <img src="{% static 'CuauhtémocDrawing.png' %}" class="sketch-images Cuauhtémoc">
-    <img src="{% static 'ShrekTijuanaDrawing.png' %}" class="sketch-images Shrek">
-    <img src="{% static 'XoloTextoDrawing.png' %}" class="sketch-images Xolo">
-    <img src="{% static 'TaqueroFDrawing.png' %}" class="sketch-images Taquero">
-    <img src="{% static 'ChurrosManDrawing.png' %}" class="sketch-images Churros">
-    <img src="{% static 'ArcDrawing.png' %}" class="sketch-images Arco">
-    <img src="{% static 'MimoMoy.png' %}" class="sketch-images Moy">
-    <img src="{% static 'MaistroDrawing.png' %}" class="sketch-images Maistro">
-    <img src="{% static 'TaxistaDrawing.png' %}" class="sketch-images Taxi">
-    <img src="{% static 'ZonkeyDrawing.png' %}" class="sketch-images Zonkey">
-    <img src="{% static 'MunguiaVsBacheDrawing.png' %}" class="sketch-images Munguia">
-    <img src="{% static 'BorderWallDrawing.png' %}" class="sketch-images Wall">
-    <img src="{% static 'TorresDrawing.png' %}" class="sketch-images Torres">
 
     {% block content %}{% endblock %}
 
