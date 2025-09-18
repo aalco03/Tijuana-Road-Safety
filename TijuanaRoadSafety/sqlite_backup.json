@@ -1,0 +1,142 @@
+[
+{
+  "model": "mapapp.potholereport",
+  "pk": 1,
+  "fields": {
+    "phone_number": "",
+    "severity": 5,
+    "latitude": 32.478829360674105,
+    "longitude": -117.02449633789062,
+    "image": "pothole_images/Screenshot_2025-09-07_at_10.19.30PM.png",
+    "timestamp": "2025-09-08T15:14:30.581Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 2,
+  "fields": {
+    "phone_number": "",
+    "severity": 5,
+    "latitude": 32.497942489277314,
+    "longitude": -117.02758624267578,
+    "image": "pothole_images/Screenshot_2025-09-07_at_10_bn575yk.19.30PM.png",
+    "timestamp": "2025-09-08T15:15:01.539Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 3,
+  "fields": {
+    "phone_number": "",
+    "severity": 5,
+    "latitude": 32.50807659169346,
+    "longitude": -117.0564253540039,
+    "image": "pothole_images/Screenshot_2025-09-07_at_10_6Zl8szN.19.30PM.png",
+    "timestamp": "2025-09-08T15:18:06.818Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 4,
+  "fields": {
+    "phone_number": "",
+    "severity": 5,
+    "latitude": 32.517051557174355,
+    "longitude": -117.03754260253906,
+    "image": "pothole_images/Screenshot_2025-09-07_at_10_5R4zeTC.19.30PM.png",
+    "timestamp": "2025-09-08T15:18:53.641Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 5,
+  "fields": {
+    "phone_number": "",
+    "severity": 5,
+    "latitude": 32.50981375171788,
+    "longitude": -117.04440905761719,
+    "image": "pothole_images/Screenshot_2025-09-07_at_10.19.30PM.png",
+    "timestamp": "2025-09-08T15:23:05.221Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 6,
+  "fields": {
+    "phone_number": "",
+    "severity": 3,
+    "latitude": 32.51936753183374,
+    "longitude": -117.05419375610352,
+    "image": "pothole_images/pothole-downloaded.jpg",
+    "timestamp": "2025-09-08T18:37:38.354Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 7,
+  "fields": {
+    "phone_number": "",
+    "severity": 3,
+    "latitude": 32.51936753183374,
+    "longitude": -117.05419375610352,
+    "image": "pothole_images/pothole-downloaded.jpg",
+    "timestamp": "2025-09-08T18:37:38.511Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 8,
+  "fields": {
+    "phone_number": "",
+    "severity": 3,
+    "latitude": 32.51936753183374,
+    "longitude": -117.05419375610352,
+    "image": "pothole_images/pothole-downloaded_MP9pjFc.jpg",
+    "timestamp": "2025-09-08T18:37:39.129Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 9,
+  "fields": {
+    "phone_number": "",
+    "severity": 4,
+    "latitude": 32.50894517590138,
+    "longitude": -117.01625659179687,
+    "image": "pothole_images/pothole2.png",
+    "timestamp": "2025-09-18T02:06:35.236Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+},
+{
+  "model": "mapapp.potholereport",
+  "pk": 10,
+  "fields": {
+    "phone_number": "",
+    "severity": 4,
+    "latitude": 32.50894517590138,
+    "longitude": -117.01625659179687,
+    "image": "pothole_images/pothole2_QMngsZx.png",
+    "timestamp": "2025-09-18T02:06:35.973Z",
+    "submission_count": 1,
+    "approximate_address": null
+  }
+}
+]
