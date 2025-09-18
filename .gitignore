@@ -1,0 +1,11 @@
+
+# Virtual Environment
+venv/
+TijuanaRoadSafety/venv/
+
+# Python
+*.pyc
+__pycache__/
+
+# Environment
+.env

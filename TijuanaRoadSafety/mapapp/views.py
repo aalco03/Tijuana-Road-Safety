@@ -38,7 +38,17 @@ def report_pothole(request):
 
             with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp_file: #WILL ALTER WHEN ESTABLISH DB
                 image = Image.open(image_file)
-                image.save(temp_file, format='JPEG')
+                # Convert RGBA to RGB before saving as JPEG
+                if image.mode == 'RGBA':
+                    # Create a white background image
+                    background = Image.new('RGB', image.size, (255, 255, 255))
+                    # Paste the image on the background
+                    background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+                    # Save the new image
+                    background.save(temp_file, format='JPEG')
+                else:
+                    # If it's already RGB, just save it
+                    image.save(temp_file, format='JPEG')
                 temp_file_path = temp_file.name
 
             #ROBOFLOW MODEL IMAGE INFERENCE
