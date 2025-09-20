@@ -149,8 +149,9 @@ def whatsapp_webhook(request):
                 if result['predictions']:
                     prediction = result['predictions'][0]
                     if prediction['confidence'] >= 0.8 and prediction['class'] == "Pothole":
-                        # Store the image URL in the session
+                        # Store the image URL and AI confidence in the session
                         session['submission']['image_url'] = media_url
+                        session['submission']['ai_confidence'] = prediction['confidence']
                         session.modified = True
                         msg.body("Image received! Now, please send the location of the pothole as a pin.")
                     else:
@@ -188,6 +189,10 @@ def whatsapp_webhook(request):
                         'severity': session['submission']['severity'],
                         'latitude': session['submission']['latitude'],
                         'longitude': session['submission']['longitude'],
+                        'submission_source': 'whatsapp',
+                        'whatsapp_message_id': request.POST.get('MessageSid', ''),
+                        'ai_confidence_score': session['submission'].get('ai_confidence', None),
+                        'status': 'verified',  # WhatsApp submissions are pre-verified by AI
                     }
                     form = PotholeReportForm(form_data, {'image': ContentFile(response.content, name="pothole_image.jpg")})
                     if form.is_valid():
