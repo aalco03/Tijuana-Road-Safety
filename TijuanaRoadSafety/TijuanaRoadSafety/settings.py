@@ -160,11 +160,12 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security settings for production only (Railway deployment)
+# Railway handles HTTPS automatically, so we don't need SECURE_SSL_REDIRECT
 if os.getenv('RAILWAY_ENVIRONMENT') and not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_SSL_REDIRECT = True
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Disabled to prevent redirect loops
+    # SECURE_HSTS_SECONDS = 31536000  # Disabled to prevent redirect loops
+    # SECURE_SSL_REDIRECT = True  # Disabled - Railway handles this
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
