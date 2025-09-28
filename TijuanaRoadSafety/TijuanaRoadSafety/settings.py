@@ -30,8 +30,16 @@ ALLOWED_HOSTS = [
     'localhost',
     '.railway.app',  # Railway domains
     '.up.railway.app',  # Railway custom domains
-    'tijuanaroadsafety.com',  # Your custom domain (replace with actual)
-    'www.tijuanaroadsafety.com',  # www version
+    'tijuana-road-safety.up.railway.app',  # Your specific Railway domain
+    'roadsafetytijuana.org',  # Your custom domain (replace with actual)
+    'www.roadsafetytijuana.org',  # www version
+]
+
+# CSRF settings for Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://tijuana-road-safety.up.railway.app',
+    'https://*.railway.app',
+    'https://*.up.railway.app',
 ]
 
 # API Keys
