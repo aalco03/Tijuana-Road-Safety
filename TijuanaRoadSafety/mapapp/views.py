@@ -7,7 +7,14 @@ from django.http import HttpResponse, JsonResponse
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.db.models import F
-from twilio.twiml.messaging_response import MessagingResponse
+# Twilio imports temporarily disabled for deployment
+# try:
+#     from twilio.twiml.messaging_response import MessagingResponse
+#     TWILIO_AVAILABLE = True
+# except ImportError:
+#     TWILIO_AVAILABLE = False
+#     MessagingResponse = None
+TWILIO_AVAILABLE = False
 from .forms import PotholeReportForm
 from .models import PotholeReport
 from .forms import AuditReportForm
@@ -104,6 +111,9 @@ def thank_you(request):
 #WHATSAPP REPORT RECEPTION
 @csrf_exempt
 def whatsapp_webhook(request):
+    if not TWILIO_AVAILABLE:
+        return HttpResponse("Twilio not available", status=503)
+    
     if request.method == 'POST':
         incoming_msg = request.POST.get('Body', '').lower()
         from_number = request.POST.get('From').replace('whatsapp:', '')  
