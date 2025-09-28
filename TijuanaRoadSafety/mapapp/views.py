@@ -15,16 +15,25 @@ from django.db.models import F
 #     TWILIO_AVAILABLE = False
 #     MessagingResponse = None
 TWILIO_AVAILABLE = False
+
+# Roboflow/AI imports temporarily disabled for deployment
+# try:
+#     from inference_sdk import InferenceHTTPClient
+#     CLIENT = InferenceHTTPClient(
+#         api_url="https://detect.roboflow.com",
+#         api_key= settings.ROBOFLOW_API_KEY
+#     )
+#     AI_AVAILABLE = True
+# except ImportError:
+#     CLIENT = None
+#     AI_AVAILABLE = False
+AI_AVAILABLE = False
+CLIENT = None
+
 from .forms import PotholeReportForm
 from .models import PotholeReport
 from .forms import AuditReportForm
-from inference_sdk import InferenceHTTPClient
 from PIL import Image
-
-CLIENT = InferenceHTTPClient(
-    api_url="https://detect.roboflow.com",
-    api_key= settings.ROBOFLOW_API_KEY
-)
 
 
 def home(request):
@@ -60,7 +69,10 @@ def report_pothole(request):
 
             #ROBOFLOW MODEL IMAGE INFERENCE
             try:
-                result = CLIENT.infer(temp_file_path, model_id="pothole-detection-bqu6s/9")
+                if AI_AVAILABLE and CLIENT:
+                    result = CLIENT.infer(temp_file_path, model_id="pothole-detection-bqu6s/9")
+                else:
+                    result = {'predictions': []}
                 
                 if result['predictions']:
                     prediction = result['predictions'][0] 
@@ -157,7 +169,10 @@ def whatsapp_webhook(request):
                     temp_file.write(response.content)
                     temp_file_path = temp_file.name
 
-                result = CLIENT.infer(temp_file_path, model_id="pothole-detection-bqu6s/9")
+                if AI_AVAILABLE and CLIENT:
+                    result = CLIENT.infer(temp_file_path, model_id="pothole-detection-bqu6s/9")
+                else:
+                    result = {'predictions': []}
 
                 if result['predictions']:
                     prediction = result['predictions'][0]
