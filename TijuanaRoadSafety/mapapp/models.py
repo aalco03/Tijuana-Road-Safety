@@ -34,6 +34,12 @@ class PotholeReport(models.Model):
         auto_now=True,
         help_text='Last time this report was updated'
     )
+    latest_submission_date = models.DateTimeField(
+        auto_now_add=True,
+        null=True,
+        blank=True,
+        help_text='Date of the most recent submission for this pothole'
+    )
     
     # Tracking & Analytics
     submission_count = models.IntegerField(default=1)
@@ -87,6 +93,8 @@ class PotholeReport(models.Model):
     
     def save(self, *args, **kwargs):
         """Override save to set priority level based on severity and AI confidence"""
+        from django.utils import timezone
+        
         # Auto-set priority based on severity
         if self.severity >= 4:
             self.priority_level = 'high'
@@ -98,11 +106,42 @@ class PotholeReport(models.Model):
         # Upgrade to urgent if AI confidence is very high and severity is high
         if self.ai_confidence_score and self.ai_confidence_score >= 0.9 and self.severity >= 4:
             self.priority_level = 'urgent'
+        
+        # Set latest_submission_date if it's not set (for existing records)
+        if not self.latest_submission_date:
+            self.latest_submission_date = timezone.now()
             
         super().save(*args, **kwargs)
     
     def __str__(self):
         return f"Pothole Report #{self.id} - {self.get_status_display()} ({self.get_priority_level_display()})"
+    
+    def get_street_name(self):
+        """Extract street name from approximate_address"""
+        if self.approximate_address:
+            # Handle fallback addresses with coordinates
+            if 'Lat:' in self.approximate_address and 'Lng:' in self.approximate_address:
+                return f"Tijuana ({self.latitude:.3f}, {self.longitude:.3f})"
+            
+            # Try to extract street name - typically the first part before comma
+            parts = self.approximate_address.split(',')
+            if parts:
+                street_name = parts[0].strip()
+                # If it's just a number or very short, try to get more context
+                if len(street_name) < 5 or street_name.isdigit():
+                    if len(parts) > 1:
+                        return f"{street_name}, {parts[1].strip()}"
+                return street_name
+        
+        # Fallback to coordinates if no address is available
+        return f"Tijuana ({self.latitude:.3f}, {self.longitude:.3f})"
+    
+    def increment_submission_count(self):
+        """Increment submission count and update latest submission date"""
+        from django.utils import timezone
+        self.submission_count += 1
+        self.latest_submission_date = timezone.now()
+        self.save()
     
     @classmethod
     def find_nearby_potholes(cls, latitude, longitude, radius_meters=50):

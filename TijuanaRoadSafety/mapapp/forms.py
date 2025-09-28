@@ -3,21 +3,22 @@ from .models import PotholeReport
 from django.core.exceptions import ValidationError
 
 class PotholeReportForm(forms.ModelForm):
-    phone_number = forms.CharField(max_length=15, required=False, label="Phone Number (optional)",
+    phone_number = forms.CharField(max_length=15, required=False, label="Número de Teléfono (opcional)",
                                    widget = forms.TextInput(attrs = 
-                                    {'placeholder': 'Enter your phone number', 'style': 'margin-right: 10 px'}))  # Optional phone number
+                                    {'placeholder': 'Introduzca su número de teléfono', 'style': 'margin-right: 10 px'}))  # Optional phone number
     severity = forms.ChoiceField(
         choices = [(i, str(i)) for i in range(1, 6)], 
         widget = forms.RadioSelect, 
-        label = "Severity of the Pothole"
+        label = "Gravedad del Bache"
     )  # Likert scale for severity
     latitude = forms.FloatField(widget = forms.HiddenInput())  # Latitude of the pothole location
     longitude = forms.FloatField(widget = forms.HiddenInput())  # Longitude of the pothole location
-    image = forms.ImageField(required = True, label = "Upload Image", help_text = "Please only submit .jpg or .png files.")  # Image submission
+    approximate_address = forms.CharField(max_length=255, required=False, widget=forms.HiddenInput())  # Address from geocoding
+    image = forms.ImageField(required = True, label = "Subir Imagen", help_text = "Por favor, envíe únicamente archivos .jpg o .png.")  # Image submission
 
     class Meta:
         model = PotholeReport
-        fields = ['phone_number', 'severity', 'latitude', 'longitude', 'image']
+        fields = ['phone_number', 'severity', 'latitude', 'longitude', 'approximate_address', 'image']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -25,7 +26,7 @@ class PotholeReportForm(forms.ModelForm):
         longitude = cleaned_data.get("longitude")
 
         if not latitude or not longitude:
-            raise ValidationError("You must place a pin on the map to report the pothole.")
+            raise ValidationError("Debes colocar un marcador en el mapa para reportar el bache.")
 
         return cleaned_data
     
@@ -33,20 +34,20 @@ class PotholeReportForm(forms.ModelForm):
         image = self.cleaned_data.get('image')
         if image:
             if not image.name.lower().endswith(('.jpg', '.jpeg', '.png')):
-                raise ValidationError('Error: please submit a .jpg or .png file.')
+                raise ValidationError('Error: por favor, envíe únicamente archivos .jpg o .png.')
         return image
 
 class AuditReportForm(forms.Form):
     phone_number = forms.CharField(
         max_length=15,
         required=True,
-        label="Phone Number"
+        label="Número de Teléfono"
     )
-    image = forms.ImageField(label="Upload an image of the covered pothole", help_text = "Please only submit .jpg or .png files.")
+    image = forms.ImageField(label="Suba una imagen del bache reparado")
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
             if not image.name.lower().endswith(('.jpg', '.jpeg', '.png')):
-                raise ValidationError('Error: please submit a .jpg or .png file.')
+                raise ValidationError('Error: por favor, envíe únicamente archivos .jpg o .png.')
         return image

@@ -23,7 +23,7 @@
                 {% endif %}
                 <span class="info-icon">
                     &#9432;
-                    <span class="tooltip">Note: If you wish to audit your own report, or update it in the future without needing further review, then please include your phone number.</span>
+                    <span class="tooltip">Nota: Si desea auditar su propio informe o actualizarlo en el futuro sin necesidad de una revisión adicional, incluya su número de teléfono.</span>
                 </span>
             </div>
 
@@ -43,13 +43,14 @@
 
             <input type="hidden" id="id_latitude" name="latitude" value="">
             <input type="hidden" id="id_longitude" name="longitude" value="">
+            <input type="hidden" id="id_approximate_address" name="approximate_address" value="">
 
             <div class="map-container">
-                <p style="font-family: 'Jacques Francois Shadow', serif;">Click on the map to place the pothole location:</p>
+                <p style="color: black; font-family: 'Figtree', sans-serif;">Presione en el mapa para colocar un marcador:</p>
                 <div id="map"></div>
             </div>
 
-            <button type="submit" class="submit-btn" id="submit-btn">Submit</button>
+            <button type="submit" class="submit-btn" id="submit-btn">Enviar</button>
         </form>
 
     <!-- Nearby Potholes Modal -->
@@ -116,6 +117,31 @@
 
             document.getElementById('id_latitude').value = location.lat();
             document.getElementById('id_longitude').value = location.lng();
+            
+            // Perform reverse geocoding to get address
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: location }, (results, status) => {
+                if (status === 'OK' && results[0]) {
+                    document.getElementById('id_approximate_address').value = results[0].formatted_address;
+                    console.log('Geocoding successful:', results[0].formatted_address);
+                } else {
+                    // Log the specific error for debugging
+                    console.warn('Geocoding failed with status:', status);
+                    if (status === 'OVER_QUERY_LIMIT') {
+                        console.warn('Google Maps API quota exceeded');
+                    } else if (status === 'REQUEST_DENIED') {
+                        console.warn('Google Maps API request denied - check API key and billing');
+                    } else if (status === 'ZERO_RESULTS') {
+                        console.warn('No results found for this location');
+                    } else if (status === 'UNKNOWN_ERROR') {
+                        console.warn('Unknown error - server issue');
+                    }
+                    
+                    // Fallback to coordinates if geocoding fails
+                    document.getElementById('id_approximate_address').value = 
+                        `Tijuana, BC, Mexico (Lat: ${location.lat().toFixed(4)}, Lng: ${location.lng().toFixed(4)})`;
+                }
+            });
         }
 
         function isWithinBounds(latLng) {

@@ -22,8 +22,8 @@ CLIENT = InferenceHTTPClient(
 
 def home(request):
     reports = PotholeReport.objects.all()
-    # Get top potholes ranked by submission count
-    top_potholes = PotholeReport.objects.all().order_by('-submission_count', '-timestamp')[:10]
+    # Get top potholes ranked by submission count, then by latest submission date
+    top_potholes = PotholeReport.objects.all().order_by('-submission_count', '-latest_submission_date')[:10]
     return render(request, 'home.html', {
         'reports': reports, 
         'top_potholes': top_potholes,
@@ -75,7 +75,10 @@ def report_pothole(request):
 
 def report_detail(request, report_id):
     report = get_object_or_404(PotholeReport, pk=report_id)
-    return render(request, 'report_detail.html', {'report': report})
+    return render(request, 'report_detail.html', {
+        'report': report,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY
+    })
 
 #SECTION FOR AUDITING REPORT
 def audit_report(request, report_id):
@@ -292,9 +295,7 @@ def increment_pothole_count(request):
         try:
             pothole_id = int(request.POST.get('pothole_id'))
             pothole = get_object_or_404(PotholeReport, id=pothole_id)
-            pothole.submission_count = F('submission_count') + 1
-            pothole.save()
-            pothole.refresh_from_db()
+            pothole.increment_submission_count()
             
             return JsonResponse({
                 'success': True,

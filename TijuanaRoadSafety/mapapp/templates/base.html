@@ -6,11 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Road Safety Tijuana{% endblock %}</title>
-    
-    <!-- Google Fonts - Jacques Francois Shadow for titles, Figtree for body -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jacques+Francois+Shadow&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     
     <style>
         .navbar-container {
@@ -85,7 +81,7 @@
             border-radius: 5px;
             font-size: 18px;
             cursor: pointer;
-            font-family: "Jacques Francois Shadow", serif;
+            font-family: "Figtree", sans-serif;
             font-weight: 500;
             transition: background-color 0.3s;
         }
@@ -118,6 +114,7 @@
         }
 
         .info-icon {
+            color: black;
             display: inline-block;
             margin-left: 5px;
             cursor: pointer;
@@ -176,7 +173,7 @@
             max-width: 1000px;
             margin: auto;
             padding: 20px;
-            background: rgba(245, 243, 243, 0.9);
+            background: #586F7C;
             box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
@@ -215,13 +212,15 @@
         }
         
         /* Hero Images Section */
-        .DonGerman { top: 1.65vh; left: 8vw; width: 14vw}
-        /* Non-overlapping edge positioning - completely separated zones - shifted down for hero section */
+        .DonGerman { top: 0.2vh; left: 8vw; width: 14vw}
+        .Moreno { top: 6vh; left: 60vw; width: 32vw}
+        /* Non-overlapping edge posioning - completely separated zones - shifted down for hero section */
+        .Caesars { top: 42vh; right: 16vw; width: 18vw; }
         .Taquero { top: 39vh; left: 1vw; width: 18vw; }
         .Cuauhtémoc { top: 56vh; left: 13vw; width: 9vw;}
         .Munguia { top: 120vh; right: 30vw; width: 35vw; }
         .Xolo { top: 121vh; left: 15vw; width: 18vw; }
-        .Taxi { top: 40vh; right: 1vw; width: 28vw; } 
+        .Taxi { top: 46vh; right: 1vw; width: 16vw; } 
         .Shrek { top: 116vh; left: 0.5vw; width: 16vw; }
         .Torres { top: 83vh; left: 0.5vw; width: 11vw; }
         .Patria { top: 96vh; left: 13vw; width: 10vw;}
@@ -233,7 +232,7 @@
         .Zonkey{ top: 132vh; right: 6vw; width: 20vw; }
 
         h1 {
-            font-family: "Jacques Francois Shadow", serif;
+            font-family: "Figtree", sans-serif;
             color: #FFFFFF;
             font-size: 32px;
             font-weight: 400;
@@ -313,6 +312,27 @@
         </div>
     </div>
 
+    {% load static %}
+    <!-- Global Hero and Sketch Images (shared across all pages) -->
+    <!-- Hero Images -->
+    <img src="{% static 'DonGermanDrawing.png' %}" class="hero-images DonGerman"> 
+    <img src="{% static 'BrandonMorenoDrawing.png' %}" class="hero-images Moreno"> 
+    <!-- Sketch Images -->
+    <img src="{% static 'CaesarsDrawing.png' %}" class="sketch-images Caesars">
+    <img src="{% static 'TijuanaDrawing.png' %}" class="sketch-images Patria">
+    <img src="{% static 'CuauhtémocDrawing.png' %}" class="sketch-images Cuauhtémoc">
+    <img src="{% static 'ShrekTijuanaDrawing.png' %}" class="sketch-images Shrek">
+    <img src="{% static 'XoloTextoDrawing.png' %}" class="sketch-images Xolo">
+    <img src="{% static 'TaqueroFDrawing.png' %}" class="sketch-images Taquero">
+    <img src="{% static 'ChurrosManDrawing.png' %}" class="sketch-images Churros">
+    <img src="{% static 'ArcDrawing.png' %}" class="sketch-images Arco">
+    <img src="{% static 'MimoMoy.png' %}" class="sketch-images Moy">
+    <img src="{% static 'MaistroDrawing.png' %}" class="sketch-images Maistro">
+    <img src="{% static 'TaxistaDrawing.png' %}" class="sketch-images Taxi">
+    <img src="{% static 'ZonkeyDrawing.png' %}" class="sketch-images Zonkey">
+    <img src="{% static 'MunguiaVsBacheDrawing.png' %}" class="sketch-images Munguia">
+    <img src="{% static 'BorderWallDrawing.png' %}" class="sketch-images Wall">
+    <img src="{% static 'TorresDrawing.png' %}" class="sketch-images Torres">
 
     {% block content %}{% endblock %}
 

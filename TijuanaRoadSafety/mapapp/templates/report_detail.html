@@ -4,18 +4,73 @@
 
 {% block content %}
     <div class="container">
-        <h1>Pothole Report</h1>
+        <h1>Reporte</h1>
 
-        <p><strong>Date of Submission:</strong> {{ report.timestamp }}</p>
 
         {% if report.image %}
             <p><img src="{{ report.image.url }}" alt="Pothole Image" class="report-image"></p>
         {% else %}
-            <p>No image available.</p>
+            <p>No hay imagen disponible.</p>
         {% endif %}
 
+        <div style="margin: 20px 0; padding: 15px; border-radius: 8px;">
+            <p><strong>Fecha de Reporte:</strong> {{ report.timestamp }}</p>
+            <p><strong>Ubicación Aproximada:</strong> <span id="address-display" style="color: white">Cargando dirección...</span></p>
+            <p><strong>Severidad:</strong> {{ report.severity }}/5</p>
+            <p><strong>Número de Reportes:</strong> {{ report.submission_count }}</p>
+        </div>
+
         <form action="{% url 'audit_report' report.id %}" method="get">
-            <button type="submit" class="audit-btn">Audit Submission</button>
+            <button type="submit" class="audit-btn" style = "background: #bdbdab">Auditar</button>
         </form>
     </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initGeocoding" async defer></script>
+    
+    <script>
+        function initGeocoding() {
+            const latitude = {{ report.latitude }};
+            const longitude = {{ report.longitude }};
+            const location = { lat: latitude, lng: longitude };
+            
+            const geocoder = new google.maps.Geocoder();
+            const addressDisplay = document.getElementById('address-display');
+            
+            geocoder.geocode({ location: location }, (results, status) => {
+                if (status === 'OK' && results[0]) {
+                    // Successfully got address from Google
+                    addressDisplay.textContent = results[0].formatted_address;
+                    addressDisplay.style.color = 'white';
+                } else {
+                    // Geocoding failed, show fallback
+                    addressDisplay.textContent = `Tijuana, BC, México (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`;
+                    addressDisplay.style.color = 'white';
+                    
+                    // Log the error for debugging
+                    console.warn('Geocoding failed:', status);
+                    if (status === 'OVER_QUERY_LIMIT') {
+                        console.warn('Google Maps API quota exceeded');
+                    } else if (status === 'REQUEST_DENIED') {
+                        console.warn('Google Maps API request denied - check API key');
+                    }
+                }
+            });
+        }
+        
+        // Fallback if Google Maps fails to load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const addressDisplay = document.getElementById('address-display');
+                if (addressDisplay.textContent === 'Cargando dirección...') {
+                    const latitude = {{ report.latitude }};
+                    const longitude = {{ report.longitude }};
+                    addressDisplay.textContent = `Tijuana, BC, México (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`;
+                    addressDisplay.style.color = '#666';
+                    console.warn('Google Maps API failed to load');
+                }
+            }, 5000); // Wait 5 seconds before fallback
+        });
+    </script>
 {% endblock %}
