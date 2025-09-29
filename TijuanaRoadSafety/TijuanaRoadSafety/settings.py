@@ -22,7 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-change-this-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+# Temporarily enable DEBUG for CSRF troubleshooting
+DEBUG = True  # os.getenv('DEBUG', 'False').lower() == 'true'
 
 # Production-ready allowed hosts
 ALLOWED_HOSTS = [
@@ -35,12 +36,23 @@ ALLOWED_HOSTS = [
     'www.roadsafetytijuana.org',  # www version
 ]
 
-# CSRF settings for Railway
+# CSRF settings for Railway - COMPREHENSIVE
 CSRF_TRUSTED_ORIGINS = [
     'https://tijuana-road-safety.up.railway.app',
     'https://*.railway.app',
     'https://*.up.railway.app',
+    'https://roadsafetytijuana.org',
+    'https://www.roadsafetytijuana.org',
 ]
+
+# Additional CSRF settings for production
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
+
+# Allow CSRF for API endpoints if needed
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
 # API Keys
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")

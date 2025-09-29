@@ -319,6 +319,7 @@ def submit_pothole_report(session, from_number, msg):
         msg.body(f"Failed to download the image. Please try again later. Error: {str(e)}")
 
 # API endpoint for checking nearby potholes
+@csrf_exempt
 def check_nearby_potholes(request):
     if request.method == 'POST':
         try:
@@ -348,6 +349,7 @@ def check_nearby_potholes(request):
     return JsonResponse({'error': 'POST request required'}, status=405)
 
 # API endpoint for incrementing pothole submission count
+@csrf_exempt
 def increment_pothole_count(request):
     if request.method == 'POST':
         try:
