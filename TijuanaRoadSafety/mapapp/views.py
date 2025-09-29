@@ -16,19 +16,37 @@ from django.db.models import F
 #     MessagingResponse = None
 TWILIO_AVAILABLE = False
 
-# Roboflow/AI imports temporarily disabled for deployment
-# try:
-#     from inference_sdk import InferenceHTTPClient
-#     CLIENT = InferenceHTTPClient(
-#         api_url="https://detect.roboflow.com",
-#         api_key= settings.ROBOFLOW_API_KEY
-#     )
-#     AI_AVAILABLE = True
-# except ImportError:
-#     CLIENT = None
-#     AI_AVAILABLE = False
-AI_AVAILABLE = False
-CLIENT = None
+# Roboflow AI detection using HTTP API (no OpenCV required)
+def detect_pothole_via_api(image_path, api_key):
+    """
+    Use Roboflow's HTTP API to detect potholes without requiring OpenCV
+    """
+    if not api_key:
+        return {'predictions': []}
+    
+    try:
+        # Read image file
+        with open(image_path, 'rb') as image_file:
+            # Roboflow API endpoint
+            api_url = "https://detect.roboflow.com/pothole-detection-bqu6s/9"
+            
+            # Make API request
+            response = requests.post(
+                f"{api_url}?api_key={api_key}",
+                files={"file": image_file}
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Roboflow API error: {response.status_code}")
+                return {'predictions': []}
+                
+    except Exception as e:
+        print(f"Roboflow API exception: {e}")
+        return {'predictions': []}
+
+AI_AVAILABLE = bool(settings.ROBOFLOW_API_KEY)
 
 from .forms import PotholeReportForm
 from .models import PotholeReport
@@ -69,20 +87,28 @@ def report_pothole(request):
 
             #ROBOFLOW MODEL IMAGE INFERENCE
             try:
-                if AI_AVAILABLE and CLIENT:
-                    result = CLIENT.infer(temp_file_path, model_id="pothole-detection-bqu6s/9")
+                if AI_AVAILABLE:
+                    result = detect_pothole_via_api(temp_file_path, settings.ROBOFLOW_API_KEY)
                 else:
                     result = {'predictions': []}
                 
                 if result['predictions']:
                     prediction = result['predictions'][0] 
                     if prediction['confidence'] >= 0.8 and prediction['class'] == "Pothole": #ALTER IF WE WANT TO MAKE THRESHOLD LOWER
-                        form.save()
+                        # Save with AI confidence score
+                        report = form.save(commit=False)
+                        report.ai_confidence_score = prediction['confidence']
+                        report.save()
                         return redirect('thank_you')
                     else:
                         form.add_error(None, "The submitted image does not appear to contain a pothole. Please try to take a clearer picture.")
                 else:
-                    form.add_error(None, "The submitted image does not appear to contain a pothole. Please try to take a clearer picture.")
+                    # If AI detection fails or no API key, still allow manual submission
+                    if not AI_AVAILABLE:
+                        form.save()
+                        return redirect('thank_you')
+                    else:
+                        form.add_error(None, "The submitted image does not appear to contain a pothole. Please try to take a clearer picture.")
                     
             finally:
                 os.remove(temp_file_path)
@@ -169,8 +195,8 @@ def whatsapp_webhook(request):
                     temp_file.write(response.content)
                     temp_file_path = temp_file.name
 
-                if AI_AVAILABLE and CLIENT:
-                    result = CLIENT.infer(temp_file_path, model_id="pothole-detection-bqu6s/9")
+                if AI_AVAILABLE:
+                    result = detect_pothole_via_api(temp_file_path, settings.ROBOFLOW_API_KEY)
                 else:
                     result = {'predictions': []}
 
