@@ -48,6 +48,13 @@ ROBOFLOW_API_KEY = os.getenv("ROBOFLOW_API_KEY")
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 
+# Cloudinary configuration for reliable image storage
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
 
 # Application definition
 
@@ -58,7 +65,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mapapp'
+    'cloudinary_storage',
+    'cloudinary',
+    'mapapp',
 ]
 
 MIDDLEWARE = [
@@ -155,17 +164,24 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files (user uploads)
+# Media files (user uploads) - CRITICAL DATA STORAGE
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
-# Ensure media files work in production
-if not DEBUG:
-    # For Railway production, ensure media files are served
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Use Cloudinary for reliable, persistent image storage
+if os.getenv('CLOUDINARY_CLOUD_NAME'):
+    # Production: Use Cloudinary for 100% reliable storage
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    # Local development only
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 # WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Configure WhiteNoise to serve media files in production
+if os.getenv('RAILWAY_ENVIRONMENT'):
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_AUTOREFRESH = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

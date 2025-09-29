@@ -58,6 +58,13 @@ def home(request):
     reports = PotholeReport.objects.all()
     # Get top potholes ranked by submission count, then by latest submission date
     top_potholes = PotholeReport.objects.all().order_by('-submission_count', '-latest_submission_date')[:10]
+    
+    # Debug: Print image URLs to console
+    for pothole in top_potholes:
+        if pothole.image:
+            print(f"Pothole #{pothole.id} image URL: {pothole.image.url}")
+            print(f"Pothole #{pothole.id} image path: {pothole.image.path}")
+    
     return render(request, 'home.html', {
         'reports': reports, 
         'top_potholes': top_potholes,
