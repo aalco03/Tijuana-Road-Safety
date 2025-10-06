@@ -25,5 +25,9 @@ RUN python manage.py collectstatic --noinput
 # Expose port
 EXPOSE 8000
 
-# Start command using shell form to allow variable expansion
-CMD gunicorn TijuanaRoadSafety.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+# Create a startup script to handle PORT variable properly
+RUN echo '#!/bin/bash\nset -e\nPORT=${PORT:-8000}\nexec gunicorn TijuanaRoadSafety.wsgi:application --bind 0.0.0.0:$PORT "$@"' > /start.sh
+RUN chmod +x /start.sh
+
+# Start command
+CMD ["/start.sh"]
