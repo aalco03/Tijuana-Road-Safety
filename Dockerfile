@@ -25,5 +25,5 @@ RUN python manage.py collectstatic --noinput
 # Expose port
 EXPOSE 8000
 
-# Start command
-CMD ["gunicorn", "TijuanaRoadSafety.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Start command using shell form to allow variable expansion
+CMD gunicorn TijuanaRoadSafety.wsgi:application --bind 0.0.0.0:${PORT:-8000}
