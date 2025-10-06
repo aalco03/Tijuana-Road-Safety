@@ -1,12 +1,16 @@
 import os
 import tempfile
 import requests
+import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.db.models import F
+
+# Set up logging
+logger = logging.getLogger(__name__)
 # Twilio imports temporarily disabled for deployment
 # try:
 #     from twilio.twiml.messaging_response import MessagingResponse
@@ -72,57 +76,88 @@ def home(request):
     })
 
 def report_pothole(request):
+    logger.info(f"report_pothole view called with method: {request.method}")
+    
     if request.method == 'POST':
+        logger.info("Processing POST request for pothole report")
         form = PotholeReportForm(request.POST, request.FILES)
+        
         if form.is_valid():
+            logger.info("Form is valid, processing submission")
             image_file = form.cleaned_data['image']
+            logger.info(f"Image file received: {image_file.name}, size: {image_file.size} bytes")
 
-            with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp_file: #WILL ALTER WHEN ESTABLISH DB
-                image = Image.open(image_file)
-                # Convert RGBA to RGB before saving as JPEG
-                if image.mode == 'RGBA':
-                    # Create a white background image
-                    background = Image.new('RGB', image.size, (255, 255, 255))
-                    # Paste the image on the background
-                    background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
-                    # Save the new image
-                    background.save(temp_file, format='JPEG')
-                else:
-                    # If it's already RGB, just save it
-                    image.save(temp_file, format='JPEG')
-                temp_file_path = temp_file.name
-
-            #ROBOFLOW MODEL IMAGE INFERENCE
             try:
-                if AI_AVAILABLE:
-                    result = detect_pothole_via_api(temp_file_path, settings.ROBOFLOW_API_KEY)
-                else:
-                    result = {'predictions': []}
-                
-                if result['predictions']:
-                    prediction = result['predictions'][0] 
-                    if prediction['confidence'] >= 0.8 and prediction['class'] == "Pothole": #ALTER IF WE WANT TO MAKE THRESHOLD LOWER
-                        # Save with AI confidence score
-                        report = form.save(commit=False)
-                        report.ai_confidence_score = prediction['confidence']
-                        report.save()
-                        return redirect('thank_you')
-                    else:
-                        form.add_error(None, "The submitted image does not appear to contain a pothole. Please try to take a clearer picture.")
-                else:
-                    # If AI detection fails or no API key, still allow manual submission
-                    if not AI_AVAILABLE:
-                        form.save()
-                        return redirect('thank_you')
-                    else:
-                        form.add_error(None, "The submitted image does not appear to contain a pothole. Please try to take a clearer picture.")
+                with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp_file:
+                    image = Image.open(image_file)
+                    logger.info(f"Image opened successfully, mode: {image.mode}, size: {image.size}")
                     
-            finally:
-                os.remove(temp_file_path)
+                    # Convert RGBA to RGB before saving as JPEG
+                    if image.mode == 'RGBA':
+                        # Create a white background image
+                        background = Image.new('RGB', image.size, (255, 255, 255))
+                        # Paste the image on the background
+                        background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+                        # Save the new image
+                        background.save(temp_file, format='JPEG')
+                        logger.info("Image converted from RGBA to RGB")
+                    else:
+                        # If it's already RGB, just save it
+                        image.save(temp_file, format='JPEG')
+                        logger.info("Image saved as JPEG")
+                    temp_file_path = temp_file.name
+
+                #ROBOFLOW MODEL IMAGE INFERENCE
+                try:
+                    if AI_AVAILABLE:
+                        logger.info("Running AI pothole detection")
+                        result = detect_pothole_via_api(temp_file_path, settings.ROBOFLOW_API_KEY)
+                        logger.info(f"AI detection result: {len(result.get('predictions', []))} predictions")
+                    else:
+                        result = {'predictions': []}
+                        logger.info("AI detection not available, skipping")
+                    
+                    if result['predictions']:
+                        prediction = result['predictions'][0] 
+                        logger.info(f"AI prediction: class={prediction.get('class')}, confidence={prediction.get('confidence')}")
+                        
+                        if prediction['confidence'] >= 0.8 and prediction['class'] == "Pothole":
+                            # Save with AI confidence score
+                            report = form.save(commit=False)
+                            report.ai_confidence_score = prediction['confidence']
+                            report.save()
+                            logger.info(f"Pothole report saved successfully with ID: {report.id}")
+                            return redirect('thank_you')
+                        else:
+                            logger.warning(f"AI rejected image: confidence={prediction.get('confidence')}, class={prediction.get('class')}")
+                            form.add_error(None, "The submitted image does not appear to contain a pothole. Please try to take a clearer picture.")
+                    else:
+                        # If AI detection fails or no API key, still allow manual submission
+                        if not AI_AVAILABLE:
+                            logger.info("Saving report without AI validation")
+                            saved_report = form.save()
+                            logger.info(f"Pothole report saved successfully with ID: {saved_report.id}")
+                            return redirect('thank_you')
+                        else:
+                            logger.warning("AI detection returned no predictions")
+                            form.add_error(None, "The submitted image does not appear to contain a pothole. Please try to take a clearer picture.")
+                        
+                finally:
+                    if os.path.exists(temp_file_path):
+                        os.remove(temp_file_path)
+                        logger.info("Temporary file cleaned up")
+
+            except Exception as e:
+                logger.error(f"Error processing pothole report: {str(e)}", exc_info=True)
+                form.add_error(None, "An error occurred while processing your submission. Please try again.")
+        else:
+            logger.warning(f"Form validation failed: {form.errors}")
 
         return render(request, 'report_pothole.html', {'form': form}) 
     else:
         form = PotholeReportForm()
+        logger.info("Rendering empty form for GET request")
+    
     return render(request, 'report_pothole.html', {'form': form, 'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY}) 
 
 def report_detail(request, report_id):
