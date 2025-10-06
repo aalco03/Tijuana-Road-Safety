@@ -29,7 +29,7 @@ def main():
     # Run migrations
     print("\n🔄 Running database migrations...")
     try:
-        result = subprocess.run(['python', 'manage.py', 'migrate'], 
+        result = subprocess.run(['python3', 'manage.py', 'migrate'], 
                               capture_output=True, text=True, check=True)
         print("✅ Migrations completed successfully!")
         print(result.stdout)
@@ -41,7 +41,7 @@ def main():
     # Show migration status
     print("\n📋 Migration status:")
     try:
-        result = subprocess.run(['python', 'manage.py', 'showmigrations'], 
+        result = subprocess.run(['python3', 'manage.py', 'showmigrations'], 
                               capture_output=True, text=True, check=True)
         print(result.stdout)
     except subprocess.CalledProcessError as e:
@@ -59,7 +59,7 @@ else:
 '''
     
     try:
-        result = subprocess.run(['python', 'manage.py', 'shell'], 
+        result = subprocess.run(['python3', 'manage.py', 'shell'], 
                               input=create_user_script, text=True, 
                               capture_output=True, check=True)
         print(result.stdout)
