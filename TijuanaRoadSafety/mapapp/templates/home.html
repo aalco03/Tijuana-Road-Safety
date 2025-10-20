@@ -4,20 +4,8 @@
 
 {% block content %}
   <!-- Main Hero Section - Full Bleed -->
-  <section class="main-hero" style="
-    background: #586F7C;
-    color: white;
-    text-align: center;
-    padding: 80px 20px;
-    margin: -80px 0 40px 0;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    box-sizing: border-box;
-  ">
+  {% load static %}
+  <section class="main-hero main-hero-textured">
     <div style="
       max-width: 800px;
       margin: 0 auto;
@@ -38,13 +26,14 @@
         line-height: 1.6;
       ">Este es un proyecto cuyo objetivo es promover la transparencia de nuestro gobierno local para garantizar la seguridad de sus ciudadanos al utilizar las vías publicas. Haga su reporte por esta pagina, o por WhatsApp a este numero: (+52) 888-8888.</p>
     </div>
+    
+    <!-- Hero Images - Only on home page -->
+    <img src="{% static 'DonGermanDrawing.png' %}" class="hero-images DonGerman"> 
+    <img src="{% static 'BrandonMorenoDrawing.png' %}" class="hero-images Moreno">
   </section>
 
   <!-- Sketch Images -->
   {% load static %}
-  <!-- Hero Images -->
-  <img src="{% static 'DonGermanDrawing.png' %}" class="hero-images DonGerman"> 
-  <img src="{% static 'BrandonMorenoDrawing.png' %}" class="hero-images Moreno"> 
   <!-- Sketch Images -->
   <img src="{% static 'CaesarsDrawing.png' %}" class="sketch-images Caesars">
   <img src="{% static 'TijuanaDrawing.png' %}" class="sketch-images Patria">
@@ -68,16 +57,7 @@
         <div class="map-section" style="flex: 1; min-width: 0;">
             <div class="map-container" style="background: rgba(245, 243, 243, 0.95); border-radius: 8px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: 576px; display: flex; flex-direction: column;">
                 <div class="map-controls" style="margin-bottom: 10px; text-align: left;">
-                    <button id="expandMapBtn" onclick="toggleMapSize()" style="
-                        background: #bdbdab;
-                        color: white;
-                        border: none;
-                        padding: 8px 16px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-family: 'Figtree', sans-serif;
-                        font-size: 12px;
-                    ">Expand Map</button>
+                    <button id="expandMapBtn" onclick="toggleMapSize()" class="expand-map-btn">Expand Map</button>
                 </div>
                 <div id="map" style="flex: 1; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"></div>
             </div>
@@ -88,7 +68,7 @@
             <div class="table-container" style="background: rgba(245, 243, 243, 0.95); border-radius: 8px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: 576px; overflow-y: auto;">
                 <table class="table table-striped" style="width: 100%; margin: 0; border-collapse: collapse;">
                     <thead>
-                        <tr style="background: #586F7C; color: white;">
+                        <tr class="table-header-textured">
                             <th style="padding: 6px; font-size: 11px; text-align: center;">Puesto</th>
                             <th style="padding: 6px; font-size: 11px;">Imagen</th>
                             <th style="padding: 6px; font-size: 11px;">Ubicación</th>
@@ -115,7 +95,7 @@
                             <td style="padding: 4px; text-align: center;">
                                 <div style="display: flex; align-items: center; justify-content: center;">
                                     <div style="width: 30px; height: 6px; background: #ddd; border-radius: 3px; margin-right: 4px; overflow: hidden;">
-                                        <div style="width: {{ pothole.severity|floatformat:0 }}0%; height: 100%; background: {% if pothole.severity <= 2 %}#00FF00{% elif pothole.severity == 3 %}#FFFF00{% elif pothole.severity == 4 %}#FF7F00{% else %}#FF0000{% endif %};"></div>
+                                        <div style="width: {{ pothole.severity|floatformat:0 }}0%; height: 100%; background: {% if pothole.severity == 1 %}#7fb069{% elif pothole.severity == 2 %}#a8c256{% elif pothole.severity == 3 %}#c4a545{% elif pothole.severity == 4 %}#c8956d{% else %}#b85450{% endif %};"></div>
                                     </div>
                                     <span style="font-size: 10px; font-weight: bold; color: black;">{{ pothole.severity }}/5</span>
                                 </div>
@@ -147,20 +127,7 @@
         box-sizing: border-box;
     ">
         <div style="position: relative; width: 100%; height: 100%;">
-            <button id="closeMapBtn" onclick="closeExpandedMap()" style="
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                background: #e74c3c;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-family: 'Shrikhand', cursive;
-                z-index: 1001;
-                font-size: 14px;
-            ">Close</button>
+            <button id="closeMapBtn" onclick="closeExpandedMap()" class="close-map-btn">Close</button>
             <div id="expandedMap" style="width: 100%; height: 100%; border-radius: 10px; background: white;"></div>
         </div>
     </div>
@@ -262,18 +229,17 @@
             locations.forEach(function(location) {
                 var color;
                 switch(location.severity) {
-                    case 1: color = '#00FF00'; break;  // Green
-                    case 2: color = '#7FFF00'; break;
-                    case 3: color = '#FFFF00'; break;
-                    case 4: color = '#FF7F00'; break;
-                    case 5: color = '#FF0000'; break;  // Red
+                    case 1: color = '#7fb069'; break;  // Warm green
+                    case 2: color = '#a8c256'; break;  // Olive green
+                    case 3: color = '#c4a545'; break;  // Mustard yellow
+                    case 4: color = '#c8956d'; break;  // Warm orange
+                    case 5: color = '#b85450'; break;  // Warm red
                 }
 
                 var marker = new google.maps.Marker({
                     position: { lat: location.lat, lng: location.lng },
                     map: map,
                     title: "Pothole (Severity: " + location.severity + ")",
-                    icon: {
                         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
                             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">' +
                             '<circle cx="12" cy="12" r="10" fill="' + color + '" stroke="#333" stroke-width="2"/>' +
@@ -334,11 +300,11 @@
                     locations.forEach(function(location) {
                         var color;
                         switch(location.severity) {
-                            case 1: color = '#00FF00'; break;
-                            case 2: color = '#7FFF00'; break;
-                            case 3: color = '#FFFF00'; break;
-                            case 4: color = '#FF7F00'; break;
-                            case 5: color = '#FF0000'; break;
+                            case 1: color = '#7fb069'; break;  // Warm green
+                            case 2: color = '#a8c256'; break;  // Olive green
+                            case 3: color = '#c4a545'; break;  // Mustard yellow
+                            case 4: color = '#c8956d'; break;  // Warm orange
+                            case 5: color = '#b85450'; break;  // Warm red
                         }
 
                         var expandedMarker = new google.maps.Marker({

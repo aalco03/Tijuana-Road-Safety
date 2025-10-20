@@ -24,12 +24,30 @@
             display: flex;
             justify-content: center;
             background: #BE6E46;
+            background-image: url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
             border-radius: 10px;
             padding: 8px 20px;
             max-width: 1000px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
-
+        
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #BE6E46;
+            opacity: 0.7;
+            border-radius: 10px;
+            z-index: 1;
+        }
+        
         .navbar a {
             font-family: "Figtree", sans-serif;
             color: white;
@@ -40,6 +58,9 @@
             display: inline-block;
             transition: background 0.3s ease, color 0.3s ease;
             border-radius: 5px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .navbar a:hover {
@@ -75,8 +96,10 @@
             width: 100%;
             padding: 10px;
             margin-top: 20px;
-            background-color: #586F7C;
-            color: white;
+            background: linear-gradient(rgba(88, 111, 124, 0.85), rgba(88, 111, 124, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white !important;
             border: none;
             border-radius: 5px;
             font-size: 18px;
@@ -84,6 +107,15 @@
             font-family: "Figtree", sans-serif;
             font-weight: 500;
             transition: background-color 0.3s;
+            position: relative;
+        }
+        
+        /* Global button text visibility */
+        .submit-btn, .audit-btn, .expand-map-btn, .close-map-btn, .modal-btn-textured, .modal-cancel-btn {
+            color: white !important;
+            position: relative;
+            z-index: 2 !important;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
         }
         
         .submit-btn:hover {
@@ -101,12 +133,15 @@
             width: auto;
             padding: 10px 20px;
             margin: 20px auto;
-            background-color: #586F7C;
-            color: white;
+            background: linear-gradient(rgba(88, 111, 124, 0.85), rgba(88, 111, 124, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white !important;
             border: none;
             border-radius: 5px;
             font-size: 18px;
             cursor: pointer;
+            position: relative;
         }
 
         .audit-btn:hover {
@@ -173,9 +208,12 @@
             max-width: 1000px;
             margin: auto;
             padding: 20px;
-            background: #586F7C;
+            background: linear-gradient(rgba(88, 111, 124, 0.85), rgba(88, 111, 124, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
             box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            position: relative;
         }
         
         .hero-images {
@@ -282,6 +320,341 @@
             }
         }
 
+        /* Button styles with texture */
+        .expand-map-btn {
+            background: linear-gradient(rgba(189, 189, 171, 0.85), rgba(189, 189, 171, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white !important;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Figtree', sans-serif;
+            font-size: 12px;
+            position: relative;
+        }
+        
+        .expand-map-btn:hover {
+            background-color: #9a9a87;
+        }
+        
+        .close-map-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(rgba(231, 76, 60, 0.85), rgba(231, 76, 60, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white !important;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Figtree', sans-serif;
+            z-index: 1001;
+            font-size: 14px;
+        }
+        
+        .close-map-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Table header with texture */
+        .table-header-textured {
+            background: linear-gradient(rgba(88, 111, 124, 0.85), rgba(88, 111, 124, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white !important;
+            position: relative;
+        }
+        
+        .table-header-textured th {
+            color: white !important;
+            position: relative;
+            z-index: 2;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Hero section with texture */
+        .main-hero-textured {
+            background: linear-gradient(rgba(88, 111, 124, 0.85), rgba(88, 111, 124, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            margin: -80px 0 40px 0;
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            box-sizing: border-box;
+        }
+        
+        .main-hero-textured h1 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        
+        .main-hero-textured p {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Report header with texture */
+        .report-header-textured {
+            font-family: 'Figtree', sans-serif;
+            color: #FFFFFF !important;
+            font-size: 52px;
+            font-weight: 400;
+            margin: 0;
+            text-align: center;
+            position: relative;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+            z-index: 200;
+        }
+        
+        .report-header-textured::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 5%;
+            transform: translate(5%, -40%);
+            width: 340px;
+            height: 340px;
+            background-image: url("{% static 'AxolotlDrawing.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 100;
+            pointer-events: none;
+            filter: none;
+            mix-blend-mode: screen;
+            image-rendering: high-quality;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: smooth;
+        }
+        
+        .report-header-textured::after {
+            content: '';
+            position: absolute;
+            top: 0%;
+            left: 70%;
+            transform: translate(-50%, -40%);
+            width: 340px;
+            height: 340px;
+            background-image: url("{% static 'AxolotlCharroDrawing.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 100;
+            pointer-events: none;
+            filter: none;
+            mix-blend-mode: screen;
+            image-rendering: high-quality;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: smooth;
+            animation: charroFloat 6s ease-in-out infinite;
+            animation-delay: -3s;
+        }
+        
+        /* Bubble Animation */
+        .bubble {
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+        }
+        
+        .bubble1 {
+            top: 40%;
+            left: 10%;
+            width: 25px;
+            height: 25px;
+            background-image: url("{% static 'BubblesDrawing1.png' %}");
+            z-index: 101;
+            animation: bubbleBreath1 2s ease-in-out infinite;
+        }
+        
+        .bubble2 {
+            top: 32%;
+            left: 9.5%;
+            width: 25px;
+            height: 25px;
+            background-image: url("{% static 'BubblesDrawing2.png' %}");
+            z-index: 102;
+            animation: bubbleBreath2 2s ease-in-out infinite;
+        }
+        
+        .bubble3 {
+            top: 26%;
+            left: 9.5%;
+            width: 25px;
+            height: 25px;
+            background-image: url("{% static 'BubblesDrawing3.png' %}");
+            z-index: 103;
+            animation: bubbleBreath3 2s ease-in-out infinite;
+        }
+        
+        .bubble4 {
+            top: 20%;
+            left: 7.5%;
+            width: 25px;
+            height: 25px;
+            background-image: url("{% static 'BubblesDrawing4.png' %}");
+            z-index: 104;
+            animation: bubbleBreath4 2s ease-in-out infinite;
+        }
+        
+        @keyframes bubbleBreath1 {
+            0%, 100% { opacity: 0;transform: translateY(0px); }
+            25% {  opacity: 1;transform: translateY(-5px); }
+            50% { opacity: 1; transform: translateY(-10px); }
+            75% { opacity: 1; transform: translateY(-8px); }
+        }
+        
+        @keyframes bubbleBreath2 {
+            0%, 100% { opacity: 0; transform: translateY(0px); }
+            30% { opacity: 1; transform: translateY(-8px); }
+            55% { opacity: 1; transform: translateY(-15px); }
+            80% { opacity: 1; transform: translateY(-12px); }
+        }
+        
+        @keyframes bubbleBreath3 {
+            0%, 100% { opacity: 0; transform: translateY(0px); }
+            35% { opacity: 1; transform: translateY(-12px); }
+            60% { opacity: 1; transform: translateY(-20px); }
+            85% { opacity: 1; transform: translateY(-18px); }
+        }
+        
+        @keyframes bubbleBreath4 {
+            0%, 100% { opacity: 0; transform: translateY(0px); }
+            40% { opacity: 1; transform: translateY(-15px); }
+            65% { opacity: 1; transform: translateY(-25px); }
+            90% { opacity: 1; transform: translateY(-22px); }
+        }
+        
+        @keyframes charroFloat {
+            0%, 100% { transform: translate(-50%, -40px) rotate(0deg); }
+            25% { transform: translate(-50%, -50px) rotate(1deg); }
+            50% { transform: translate(-50%, -45px) rotate(-1deg); }
+            75% { transform: translate(-50%, -55px) rotate(0.5deg); }
+        }
+        
+        /* Modal buttons with texture */
+        .modal-btn-textured {
+            background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white !important;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Figtree', sans-serif;
+            position: relative;
+        }
+        
+        .modal-btn-textured:hover {
+            background-color: #1a252f;
+        }
+        
+        .modal-cancel-btn {
+            background: linear-gradient(rgba(102, 102, 102, 0.85), rgba(102, 102, 102, 0.85)), url("{% static 'ConstructionPaperTexture.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white !important;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .modal-cancel-btn:hover {
+            background-color: #555;
+        }
+        
+        /* Custom Severity Slider */
+        .severity-slider-container {
+            margin: 15px 0;
+            padding: 0;
+        }
+        
+        .severity-slider-label {
+            font-family: 'Figtree', sans-serif;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .severity-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: 
+                linear-gradient(to right, 
+                    #7fb069 0%, #7fb069 20%, 
+                    rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.3) 20.5%,
+                    #a8c256 20.5%, #a8c256 40%,
+                    rgba(255,255,255,0.3) 40%, rgba(255,255,255,0.3) 40.5%,
+                    #c4a545 40.5%, #c4a545 60%,
+                    rgba(255,255,255,0.3) 60%, rgba(255,255,255,0.3) 60.5%,
+                    #c8956d 60.5%, #c8956d 80%,
+                    rgba(255,255,255,0.3) 80%, rgba(255,255,255,0.3) 80.5%,
+                    #b85450 80.5%, #b85450 100%
+                );
+            outline: none;
+            cursor: pointer;
+            margin: 10px 0;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .severity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #2c3e50;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .severity-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #2c3e50;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .severity-display {
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Figtree', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .severity-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-family: 'Figtree', sans-serif;
+            font-size: 12px;
+            color: #666;
+        }
+        
         /* Responsive styles for map and leaderboard */
         @media (max-width: 768px) {
             .map-leaderboard-container {
@@ -313,10 +686,7 @@
     </div>
 
     {% load static %}
-    <!-- Global Hero and Sketch Images (shared across all pages) -->
-    <!-- Hero Images -->
-    <img src="{% static 'DonGermanDrawing.png' %}" class="hero-images DonGerman"> 
-    <img src="{% static 'BrandonMorenoDrawing.png' %}" class="hero-images Moreno"> 
+    <!-- Global Sketch Images (shared across all pages) -->
     <!-- Sketch Images -->
     <img src="{% static 'CaesarsDrawing.png' %}" class="sketch-images Caesars">
     <img src="{% static 'TijuanaDrawing.png' %}" class="sketch-images Patria">
