@@ -152,7 +152,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&loading=async&callback=initMap" async defer></script>
 
     <script>
         let map;
@@ -240,6 +240,7 @@
                     position: { lat: location.lat, lng: location.lng },
                     map: map,
                     title: "Pothole (Severity: " + location.severity + ")",
+                    icon: {
                         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
                             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">' +
                             '<circle cx="12" cy="12" r="10" fill="' + color + '" stroke="#333" stroke-width="2"/>' +
